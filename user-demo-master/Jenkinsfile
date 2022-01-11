@@ -1,0 +1,36 @@
+pipeline {
+    agent {
+    		    		docker {
+        		image 'index.docker.io/pd30470/build-server-backend:latest'
+        		args '-u 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
+    			label 'DOCKER'
+			}
+    	   }
+    stages {
+		stage('Compile') {
+			steps {
+				sh "mvn compile"
+			}
+		}
+		stage('Package') {
+			steps {
+			    sh "docker login index.docker.io/pd30470 -u pd30470 -p docker123"
+				sh "mvn package -DskipTests"
+			}
+		}
+       
+		stage('Analysis') {
+			steps {
+				sh "mvn sonar:sonar"
+			}
+		}
+    }
+
+	post { 
+		always {
+			sh "chmod -R 777 ./*" 
+			deleteDir()
+			cleanWs()
+		}
+	}
+}

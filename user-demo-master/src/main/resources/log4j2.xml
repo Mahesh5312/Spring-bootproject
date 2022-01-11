@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+        		<PatternLayout pattern="%d{yyyy-MM-dd 'T'HH:mm:ss.SSS} %p %X{TxId} %X{UserId} %m%n" />
+		</Console>
+ 
+        <RollingFile name="appLog"
+            fileName="logs/application.log"
+            filePattern="logs/application-%d{yyyy-MM-dd}-%i.log">
+			<PatternLayout pattern="%d{yyyy-MM-dd 'T'HH:mm:ss.SSS} %p %X{TxId} %X{UserId} %m%n" />
+		<Policies>
+                <SizeBasedTriggeringPolicy size="20000KB" />
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5" />
+        </RollingFile>
+ 
+    </Appenders>
+     <Loggers>
+ 
+        <Logger name="com.hcl.demo" additivity="false">
+            <AppenderRef ref="appLog" />
+            <AppenderRef ref="Console" />
+        </Logger>
+ 
+        <Root level="INFO">
+        	<AppenderRef ref="appLog" />
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers> 
+</Configuration>
